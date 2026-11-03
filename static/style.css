@@ -1,0 +1,204 @@
+/* ==========================================================================
+   CIPHER - Premium Neo-Brutalist Design System Stylesheet
+   ========================================================================== */
+
+/* --- Google Fonts --- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap');
+
+:root {
+    --color-primary: #1a1a1a;
+    --color-background: #f5f0e8;
+    --color-surface-bright: #faf7f2;
+    --color-primary-container: #ffcc00;
+    --color-secondary: #e63b2e;
+    --color-tertiary: #0055ff;
+}
+
+/* --- Base & Reset Elements --- */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--color-background);
+    color: var(--color-primary);
+}
+
+h1, h2, h3, h4, h5, h6, .font-headline {
+    font-family: 'Space Grotesk', sans-serif;
+}
+
+/* --- Premium Scrollbar --- */
+::-webkit-scrollbar {
+    width: 10px;
+}
+::-webkit-scrollbar-track {
+    background: var(--color-background);
+    border-left: 4px solid var(--color-primary);
+}
+::-webkit-scrollbar-thumb {
+    background: var(--color-primary);
+    border: 2px solid var(--color-background);
+}
+
+/* --- Premium Bento Dot Grid Pattern --- */
+.bento-pattern {
+    background-image: radial-gradient(rgba(26, 26, 26, 0.15) 1px, transparent 1px);
+    background-size: 20px 20px;
+}
+
+/* --- Flat Hard Neo-Brutalist Shadows --- */
+.neo-shadow {
+    box-shadow: 4px 4px 0px 0px rgba(26, 26, 26, 1);
+}
+.neo-shadow-active {
+    box-shadow: 1px 1px 0px 0px rgba(26, 26, 26, 1);
+    transform: translate(3px, 3px);
+}
+.neo-shadow-lg {
+    box-shadow: 8px 8px 0px 0px rgba(26, 26, 26, 1);
+}
+.neo-shadow-yellow {
+    box-shadow: 6px 6px 0px 0px #ffcc00;
+}
+.neo-shadow-red {
+    box-shadow: 6px 6px 0px 0px #e63b2e;
+}
+
+/* --- Range Slider Custom Styling --- */
+input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 12px;
+    background: #e8e3da;
+    outline: none;
+    border: 3px solid #1a1a1a;
+}
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 24px;
+    height: 24px;
+    background: #ffcc00;
+    border: 3px solid #1a1a1a;
+    cursor: pointer;
+    transition: background 0.1s;
+}
+input[type="range"]::-webkit-slider-thumb:hover {
+    background: #e6b800;
+}
+
+/* --- Active Tab Indicators --- */
+.active-tab-indicator {
+    clip-path: polygon(100% 0, 100% 50%, 100% 100%, 0% 100%, 25% 50%, 0% 0%);
+}
+
+/* --- View Toggle Logic --- */
+.view {
+    display: none !important;
+}
+.view.active {
+    display: flex !important;
+}
+
+/* --- Material Icons Settings --- */
+.material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+    vertical-align: middle;
+}
+
+/* --- Toast Styling (Neo-Brutalist) --- */
+.toast-container {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.toast {
+    background: #ffffff;
+    border: 4px solid var(--color-primary);
+    padding: 16px 24px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.875rem;
+    letter-spacing: 0.05em;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 6px 6px 0px 0px rgba(26,26,26,1);
+    transform: translateY(0);
+    opacity: 1;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.toast.removing {
+    transform: translateY(20px) scale(0.9);
+    opacity: 0;
+}
+.toast.success {
+    background: #ffcc00; /* Yellow */
+}
+.toast.error {
+    background: #e63b2e; /* Red */
+    color: #ffffff;
+}
+.toast.info {
+    background: #0055ff; /* Blue */
+    color: #ffffff;
+}
+
+/* --- Modals Overlay System --- */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(26, 26, 26, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+.modal-overlay.active {
+    display: flex;
+}
+.modal {
+    background: #ffffff;
+    border: 4px solid var(--color-primary);
+    width: 100%;
+    max-width: 580px;
+    box-shadow: 8px 8px 0px 0px rgba(26, 26, 26, 1);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Custom visual rating scores for strength meter */
+.strength-bar-fill {
+    transition: width 0.3s ease-in-out;
+}
+.strength-bar-fill[data-score="vweak"], .strength-bar-fill[data-score="weak"] {
+    background-color: #e63b2e;
+}
+.strength-bar-fill[data-score="fair"] {
+    background-color: #ffcc00;
+}
+.strength-bar-fill[data-score="strong"] {
+    background-color: #0055ff;
+}
+.strength-bar-fill[data-score="vstrong"] {
+    background-color: #10b981;
+}
+
+.strength-rating[data-score="vweak"], .strength-rating[data-score="weak"] { color: #e63b2e; }
+.strength-rating[data-score="fair"] { color: #d8aa00; }
+.strength-rating[data-score="strong"] { color: #0055ff; }
+.strength-rating[data-score="vstrong"] { color: #10b981; }
+
+.check-item.pass { color: #10b981; font-weight: bold; }
+.check-item.fail { color: #e63b2e; opacity: 0.75; }
+
+/* Custom bento items hover animations */
+.group:hover .group-hover\:translate-x-1 {
+    transform: translateX(4px);
+}

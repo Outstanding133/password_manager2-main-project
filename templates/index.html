@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta name="description" content="CIPHER — Premium cryptographic-grade password vault, built with Neo-Brutalist visual aesthetics and military-grade encryption." />
+    <title>CIPHER | Secure Password Vault</title>
+    <!-- Tailwind CSS with Forms and Container Queries Plugins -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="/static/style.css">
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface": "#1a1a1a",
+                        "surface-tint": "#1a1a1a",
+                        "primary-container": "#ffcc00",
+                        "on-tertiary": "#ffffff",
+                        "inverse-surface": "#1a1a1a",
+                        "on-tertiary-container": "#1a1a1a",
+                        "on-secondary": "#1a1a1a",
+                        "on-surface-variant": "#4a4a4a",
+                        "on-primary-fixed": "#1a1a1a",
+                        "outline": "#1a1a1a",
+                        "surface": "#f5f0e8",
+                        "on-primary-fixed-variant": "#1a1a1a",
+                        "secondary-container": "#ffdad6",
+                        "secondary-fixed": "#ffdad6",
+                        "on-tertiary-fixed": "#1a1a1a",
+                        "on-tertiary-fixed-variant": "#1a1a1a",
+                        "inverse-primary": "#f5f0e8",
+                        "tertiary-fixed-dim": "#a8c6ff",
+                        "outline-variant": "#d0cbc3",
+                        "primary-fixed": "#ffcc00",
+                        "error": "#cc0000",
+                        "background": "#f5f0e8",
+                        "on-primary-container": "#1a1a1a",
+                        "secondary": "#e63b2e",
+                        "surface-container-low": "#f2ede5",
+                        "on-background": "#1a1a1a",
+                        "on-error": "#ffffff",
+                        "surface-bright": "#faf7f2",
+                        "primary-fixed-dim": "#e6b800",
+                        "surface-variant": "#e8e3da",
+                        "surface-container-high": "#e8e3da",
+                        "error-container": "#ffdad6",
+                        "surface-container": "#eee9e0",
+                        "secondary-fixed-dim": "#ffb3ab",
+                        "on-secondary-fixed": "#1a1a1a",
+                        "tertiary": "#0055ff",
+                        "inverse-on-surface": "#f5f0e8",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-container": "#1a1a1a",
+                        "primary": "#1a1a1a",
+                        "on-secondary-fixed-variant": "#1a1a1a",
+                        "surface-container-highest": "#e2ddd4",
+                        "on-primary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "tertiary-container": "#d6e3ff",
+                        "surface-dim": "#d6d1c9",
+                        "tertiary-fixed": "#d6e3ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0px",
+                        "lg": "0px",
+                        "xl": "0px",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Space Grotesk"],
+                        "display": ["Space Grotesk"],
+                        "body": ["Inter"],
+                        "label": ["Space Grotesk"]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface font-body selection:bg-primary-container selection:text-on-primary-container">
+
+<div id="app" class="h-screen w-screen overflow-hidden flex flex-col p-0 m-0 max-w-full">
+
+    <!-- ============================================================
+         STAGE 1: SETUP SCREEN — First-time master password creation
+         ============================================================ -->
+    <div id="view-setup" class="view h-screen w-screen flex-col items-center justify-center p-6 bento-pattern overflow-y-auto">
+        <div class="bg-white border-4 border-primary p-8 md:p-12 max-w-md w-full neo-shadow-lg relative">
+            <!-- Neo decorative tape/tab -->
+            <div class="absolute -top-4 -left-4 bg-primary text-white font-headline font-bold text-xs uppercase px-4 py-2 rotate-[-3deg] border-2 border-white select-none">
+                Vault Setup
+            </div>
+            
+            <div class="text-left mt-4 mb-8">
+                <h1 class="font-headline text-5xl font-black leading-none uppercase italic tracking-tighter">Initialize</h1>
+                <p class="text-on-surface-variant font-label text-sm font-bold uppercase tracking-widest mt-2">Create Your CIPHER Vault</p>
+                <div class="h-1.5 bg-primary-container border-2 border-primary mt-4"></div>
+            </div>
+
+            <div id="setup-error" class="bg-secondary text-white border-2 border-primary p-4 font-label uppercase text-xs font-bold mb-6 hidden"></div>
+
+            <form id="setup-form" autocomplete="off" class="space-y-6">
+                <div class="space-y-2 text-left">
+                    <label for="setup-password" class="block font-headline font-black uppercase text-xs tracking-widest">Master Password</label>
+                    <div class="relative flex border-4 border-primary bg-white">
+                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-primary">key</span>
+                        <input type="password" id="setup-password" placeholder="ENTER STRONG MASTER PASSWORD..." class="w-full pl-12 pr-12 py-3 border-none bg-transparent font-label text-sm uppercase tracking-wider focus:ring-0 focus:outline-none placeholder-outline-variant" required minlength="8">
+                        <button type="button" class="password-toggle absolute right-3 top-1/2 -translate-y-1/2 text-primary flex items-center justify-center hover:scale-110 active:scale-95 transition-transform" data-target="setup-password">
+                            <span class="material-symbols-outlined">visibility</span>
+                        </button>
+                    </div>
+                    
+                    <!-- Live Strength Indicator -->
+                    <div class="border-2 border-primary p-4 bg-surface-container mt-3">
+                        <div class="flex justify-between items-end mb-2">
+                            <span class="font-headline font-extrabold uppercase text-[10px] tracking-widest">Strength Rating</span>
+                            <span class="font-black text-sm uppercase strength-rating" id="setup-strength-rating">EMPTY</span>
+                        </div>
+                        <div class="h-4 bg-white border-2 border-primary flex p-0.5">
+                            <div class="h-full bg-secondary strength-bar-fill w-0" id="setup-strength-bar"></div>
+                        </div>
+                        <div class="mt-2 text-[10px] font-mono font-bold text-on-surface-variant flex justify-between">
+                            <span>Entropy Level:</span>
+                            <span id="setup-strength-entropy">0 bits</span>
+                        </div>
+                        <ul class="mt-3 text-[10px] font-bold space-y-1 text-secondary uppercase list-none" id="setup-strength-feedback"></ul>
+                    </div>
+                </div>
+
+                <div class="space-y-2 text-left">
+                    <label for="setup-confirm" class="block font-headline font-black uppercase text-xs tracking-widest">Confirm Password</label>
+                    <div class="relative flex border-4 border-primary bg-white">
+                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-primary">lock</span>
+                        <input type="password" id="setup-confirm" placeholder="CONFIRM MASTER PASSWORD..." class="w-full pl-12 pr-4 py-3 border-none bg-transparent font-label text-sm uppercase tracking-wider focus:ring-0 focus:outline-none placeholder-outline-variant" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full bg-primary text-white py-4 font-headline font-black text-xl uppercase border-4 border-primary neo-shadow active:translate-x-1 active:translate-y-1 active:shadow-none transition-all flex items-center justify-center gap-2" id="setup-btn">
+                    <span class="material-symbols-outlined">shield</span>
+                    <span class="btn-text">Create Vault</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ============================================================
+         STAGE 2: UNLOCK SCREEN
+         ============================================================ -->
+    <div id="view-unlock" class="view h-screen w-screen flex-col items-center justify-center p-6 bento-pattern overflow-y-auto">
+        <div class="bg-white border-4 border-primary p-8 md:p-12 max-w-md w-full neo-shadow-lg relative">
+            <div class="absolute -top-4 -left-4 bg-primary-container text-primary font-headline font-bold text-xs uppercase px-4 py-2 rotate-[-3deg] border-2 border-primary select-none shadow-[2px_2px_0px_0px_rgba(26,26,26,1)]">
+                Access Locked
+            </div>
+
+            <div class="text-left mt-4 mb-8">
+                <h1 class="font-headline text-5xl font-black leading-none uppercase italic tracking-tighter">CIPHER</h1>
+                <p class="text-on-surface-variant font-label text-sm font-bold uppercase tracking-widest mt-2">Unlock Your Password Vault</p>
+                <div class="h-1.5 bg-primary-container border-2 border-primary mt-4"></div>
+            </div>
+
+            <div id="unlock-error" class="bg-secondary text-white border-2 border-primary p-4 font-label uppercase text-xs font-bold mb-6 hidden"></div>
+
+            <form id="unlock-form" autocomplete="off" class="space-y-6">
+                <div class="space-y-2 text-left">
+                    <label for="unlock-password" class="block font-headline font-black uppercase text-xs tracking-widest">Master Password</label>
+                    <div class="relative flex border-4 border-primary bg-white">
+                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-primary">key</span>
+                        <input type="password" id="unlock-password" placeholder="ENTER YOUR MASTER PASSWORD..." class="w-full pl-12 pr-12 py-3 border-none bg-transparent font-label text-sm uppercase tracking-wider focus:ring-0 focus:outline-none placeholder-outline-variant" required>
+                        <button type="button" class="password-toggle absolute right-3 top-1/2 -translate-y-1/2 text-primary flex items-center justify-center hover:scale-110 active:scale-95 transition-transform" data-target="unlock-password">
+                            <span class="material-symbols-outlined">visibility</span>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full bg-primary-container text-primary py-4 font-headline font-black text-xl uppercase border-4 border-primary neo-shadow active:translate-x-1 active:translate-y-1 active:shadow-none transition-all flex items-center justify-center gap-2" id="unlock-btn">
+                    <span class="material-symbols-outlined">lock_open</span>
+                    <span class="btn-text">Unlock Vault</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ============================================================
+         STAGE 3: MAIN APP (5 Dynamic Tabs + SideNavBar + TopAppBar)
+         ============================================================ -->
+    <div id="view-main" class="view h-full w-full overflow-hidden flex flex-row m-0 p-0">
+        
+        <!-- SideNavBar -->
+        <aside class="flex flex-col h-full bg-background w-64 border-r-4 border-primary shadow-[4px_4px_0px_0px_rgba(26,26,26,1)] z-30 flex-shrink-0">
+            <div class="p-8 pb-10 border-b-4 border-primary select-none">
+                <h1 class="font-headline text-4xl font-black text-on-surface">CIPHER</h1>
+                <p class="text-on-surface-variant font-label text-[10px] font-bold uppercase tracking-widest mt-1">Secure Cryptography</p>
+            </div>
+            
+            <nav class="flex-1 px-4 py-6 space-y-3 overflow-y-auto">
+                <!-- Dashboard Tab Link -->
+                <button class="nav-tab w-full flex items-center space-x-4 text-on-surface hover:bg-primary hover:text-white uppercase py-3.5 px-6 border-2 border-transparent hover:border-primary transition-all active:translate-x-1 active:translate-y-1" data-tab="dashboard" id="tab-dashboard">
+                    <span class="material-symbols-outlined text-lg">dashboard</span>
+                    <span class="font-label font-bold tracking-tight text-sm">Dashboard</span>
+                </button>
+                <!-- Vault Tab Link -->
+                <button class="nav-tab w-full flex items-center space-x-4 text-on-surface hover:bg-primary hover:text-white uppercase py-3.5 px-6 border-2 border-transparent hover:border-primary transition-all active:translate-x-1 active:translate-y-1" data-tab="vault" id="tab-vault">
+                    <span class="material-symbols-outlined text-lg">lock</span>
+                    <span class="font-label font-bold tracking-tight text-sm">Vault</span>
+                </button>
+                <!-- Generator Tab Link -->
+                <button class="nav-tab w-full flex items-center space-x-4 text-on-surface hover:bg-primary hover:text-white uppercase py-3.5 px-6 border-2 border-transparent hover:border-primary transition-all active:translate-x-1 active:translate-y-1" data-tab="generator" id="tab-generator">
+                    <span class="material-symbols-outlined text-lg">password</span>
+                    <span class="font-label font-bold tracking-tight text-sm">Generator</span>
+                </button>
+                <!-- Analyzer Tab Link -->
+                <button class="nav-tab w-full flex items-center space-x-4 text-on-surface hover:bg-primary hover:text-white uppercase py-3.5 px-6 border-2 border-transparent hover:border-primary transition-all active:translate-x-1 active:translate-y-1" data-tab="analyzer" id="tab-analyzer">
+                    <span class="material-symbols-outlined text-lg">analytics</span>
+                    <span class="font-label font-bold tracking-tight text-sm">Analyzer</span>
+                </button>
+                <!-- Security Tab Link -->
+                <button class="nav-tab w-full flex items-center space-x-4 text-on-surface hover:bg-primary hover:text-white uppercase py-3.5 px-6 border-2 border-transparent hover:border-primary transition-all active:translate-x-1 active:translate-y-1" data-tab="security" id="tab-security">
+                    <span class="material-symbols-outlined text-lg">verified_user</span>
+                    <span class="font-label font-bold tracking-tight text-sm">Security</span>
+                </button>
+            </nav>
+            
+            <div class="p-4 border-t-4 border-primary mt-auto">
+                <button class="w-full bg-secondary text-white border-2 border-primary py-4 px-6 font-headline font-black uppercase tracking-tighter hover:bg-on-surface hover:text-white transition-all shadow-[4px_4px_0px_0px_rgba(26,26,26,1)] active:shadow-none active:translate-x-1 active:translate-y-1 flex items-center justify-center space-x-2" id="btn-sidebar-add">
+                    <span class="material-symbols-outlined">add</span>
+                    <span>New Entry</span>
+                </button>
+                
+                <!-- Profile Block -->
+                <div class="mt-6 flex items-center space-x-4 p-2 bg-surface-container border-2 border-primary">
+                    <img alt="User profile" class="w-10 h-10 border-2 border-primary object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBa88f0zLTroiszvjUG_BXFjA5-qYL0e93FYi9aS0DjRxFdWxULrrYTPwx2yYggRngho9K9Q756WJhlZRONIZZPnhm6OjhNGZBzsMcyD8n_HSfC7L5SagRi_52IzxxE7kjYx0gLKpGlESQppt3CPH2KiH4jqfOM4qtJC4XAdYdVYBook2wKazTZq4qaJWiE3upa6-3YzH7LU00dWSNzPDXDO92RPK5fSYRMy4kTlhCMymLWHxEPkjula10UlAIGkUHyW3jCTz-2bg"/>
+                    <div class="overflow-hidden">
+                        <p class="font-headline font-bold text-xs truncate uppercase">User profile</p>
+                        <p class="text-[9px] text-on-surface-variant font-mono">ENCRYPTED_SESSION</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 flex flex-col min-w-0 bg-background relative overflow-hidden bento-pattern">
+            
+            <!-- TopAppBar -->
+            <header class="flex justify-between items-center px-8 py-4 w-full bg-background border-b-4 border-primary z-20 sticky top-0 flex-shrink-0">
+                <div class="flex items-center flex-1 max-w-xl">
+                    <div class="relative w-full">
+                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-primary">search</span>
+                        <!-- Vault search input, hooks to JS search query -->
+                        <input class="w-full pl-12 pr-4 py-2.5 bg-white border-2 border-primary font-label uppercase text-xs font-black focus:ring-0 focus:outline-none focus:bg-primary-container transition-colors" placeholder="SEARCH VAULT RECORD..." type="text" id="search-input"/>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-6 ml-8">
+                    <!-- Action shortcuts border and items -->
+                    <div class="flex items-center space-x-4 border-l-2 border-primary pl-6">
+                        <button class="material-symbols-outlined text-primary hover:text-secondary transition-transform active:scale-90" title="Lock Vault" id="btn-lock">lock</button>
+                        <button class="material-symbols-outlined text-secondary hover:bg-secondary hover:text-white transition-all active:scale-90 p-1 border-2 border-transparent hover:border-primary" title="Logout" onclick="location.reload()">logout</button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- ============ TAB 1: DASHBOARD ============ -->
+            <div id="tab-content-dashboard" class="tab-content flex-1 overflow-y-auto p-8 lg:p-12 space-y-10">
+                <div class="text-left max-w-6xl mx-auto w-full">
+                    <h2 class="font-headline font-black text-6xl md:text-8xl uppercase leading-none tracking-tight">Dashboard</h2>
+                    <p class="text-on-surface-variant font-medium mt-2">Real-time cryptographic database metrics & summary.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto w-full">
+                    <!-- Stat Card: Total Passwords -->
+                    <div class="bg-primary-container border-4 border-primary p-6 neo-shadow text-left">
+                        <div class="flex justify-between items-start">
+                            <span class="material-symbols-outlined text-4xl text-primary font-bold">key</span>
+                            <span class="bg-primary text-white text-[10px] px-2 py-0.5 font-bold uppercase tracking-widest">VAULT</span>
+                        </div>
+                        <p class="font-headline font-black text-5xl mt-6 uppercase" id="stat-total">0</p>
+                        <p class="font-headline font-extrabold text-xs uppercase mt-1 tracking-wider text-on-surface-variant">Total Passwords</p>
+                    </div>
+                    <!-- Stat Card: Weak Passwords -->
+                    <div class="bg-secondary-container border-4 border-primary p-6 neo-shadow text-left">
+                        <div class="flex justify-between items-start">
+                            <span class="material-symbols-outlined text-4xl text-secondary font-bold">warning</span>
+                            <span class="bg-secondary text-white text-[10px] px-2 py-0.5 font-bold uppercase tracking-widest">AUDIT</span>
+                        </div>
+                        <p class="font-headline font-black text-5xl mt-6 uppercase" id="stat-weak">0</p>
+                        <p class="font-headline font-extrabold text-xs uppercase mt-1 tracking-wider text-on-surface-variant">Weak Passwords</p>
+                    </div>
+                    <!-- Stat Card: Categories -->
+                    <div class="bg-tertiary-container border-4 border-primary p-6 neo-shadow text-left">
+                        <div class="flex justify-between items-start">
+                            <span class="material-symbols-outlined text-4xl text-tertiary font-bold">folder</span>
+                            <span class="bg-tertiary text-white text-[10px] px-2 py-0.5 font-bold uppercase tracking-widest">GROUPS</span>
+                        </div>
+                        <p class="font-headline font-black text-5xl mt-6 uppercase" id="stat-categories">0</p>
+                        <p class="font-headline font-extrabold text-xs uppercase mt-1 tracking-wider text-on-surface-variant">Active Categories</p>
+                    </div>
+                    <!-- Stat Card: Strong Passwords -->
+                    <div class="bg-white border-4 border-primary p-6 neo-shadow text-left">
+                        <div class="flex justify-between items-start">
+                            <span class="material-symbols-outlined text-4xl text-primary font-bold">verified</span>
+                            <span class="bg-primary text-white text-[10px] px-2 py-0.5 font-bold uppercase tracking-widest">SECURE</span>
+                        </div>
+                        <p class="font-headline font-black text-5xl mt-6 uppercase" id="stat-strong">0</p>
+                        <p class="font-headline font-extrabold text-xs uppercase mt-1 tracking-wider text-on-surface-variant">Strong Passwords</p>
+                    </div>
+                </div>
+
+                <div class="max-w-6xl mx-auto w-full space-y-6">
+                    <div class="flex items-center justify-between border-b-4 border-primary pb-4">
+                        <h3 class="font-headline font-black text-4xl uppercase">Recent Access Records</h3>
+                        <button class="font-label uppercase font-bold text-xs border-2 border-primary px-4 py-2 bg-white hover:bg-primary hover:text-white transition-colors neo-shadow active:shadow-none active:translate-x-0.5 active:translate-y-0.5" onclick="showTab('vault')">View Full Vault</button>
+                    </div>
+                    <!-- Recent Password Cards Container -->
+                    <div class="password-list grid grid-cols-1 md:grid-cols-2 gap-6" id="recent-list"></div>
+                </div>
+            </div>
+
+            <!-- ============ TAB 2: VAULT ============ -->
+            <div id="tab-content-vault" class="tab-content flex-1 flex flex-row overflow-hidden hidden">
+                <!-- Left Pane: Credential List -->
+                <section class="w-1/3 min-w-[320px] max-w-[450px] border-r-4 border-primary flex flex-col bg-white overflow-hidden flex-shrink-0">
+                    <div class="p-6 bg-surface-container border-b-4 border-primary flex justify-between items-center flex-shrink-0">
+                        <h2 class="font-headline font-black text-xl uppercase italic">Credentials</h2>
+                        <span class="bg-primary text-white text-[10px] px-2 py-1 font-mono font-bold" id="vault-total-count">0 TOTAL</span>
+                    </div>
+
+                    <!-- Category filters row -->
+                    <div class="p-4 border-b-2 border-primary bg-surface-container-low flex flex-wrap gap-2 overflow-x-auto flex-shrink-0" id="filter-bar">
+                        <button class="filter-chip border-2 border-primary bg-white text-xs font-headline font-bold uppercase px-3 py-1 hover:bg-primary-container active:scale-95 transition-all" data-category="all">All</button>
+                        <button class="filter-chip border-2 border-transparent text-xs font-headline font-bold uppercase px-3 py-1 hover:bg-primary-container active:scale-95 transition-all" data-category="Social">Social</button>
+                        <button class="filter-chip border-2 border-transparent text-xs font-headline font-bold uppercase px-3 py-1 hover:bg-primary-container active:scale-95 transition-all" data-category="Email">Email</button>
+                        <button class="filter-chip border-2 border-transparent text-xs font-headline font-bold uppercase px-3 py-1 hover:bg-primary-container active:scale-95 transition-all" data-category="Finance">Finance</button>
+                        <button class="filter-chip border-2 border-transparent text-xs font-headline font-bold uppercase px-3 py-1 hover:bg-primary-container active:scale-95 transition-all" data-category="Work">Work</button>
+                        <button class="filter-chip border-2 border-transparent text-xs font-headline font-bold uppercase px-3 py-1 hover:bg-primary-container active:scale-95 transition-all" data-category="Shopping">Shopping</button>
+                        <button class="filter-chip border-2 border-transparent text-xs font-headline font-bold uppercase px-3 py-1 hover:bg-primary-container active:scale-95 transition-all" data-category="Gaming">Gaming</button>
+                        <button class="filter-chip border-2 border-transparent text-xs font-headline font-bold uppercase px-3 py-1 hover:bg-primary-container active:scale-95 transition-all" data-category="General">General</button>
+                    </div>
+
+                    <!-- List Container (Dynamic) -->
+                    <div class="flex-grow overflow-y-auto divide-y-2 divide-primary" id="vault-list"></div>
+                </section>
+
+                <!-- Right Pane: Detail View -->
+                <section class="flex-1 bg-surface flex flex-col p-12 overflow-y-auto text-left" id="vault-detail-pane">
+                    <!-- Default Empty State -->
+                    <div class="h-full w-full flex flex-col items-center justify-center max-w-md mx-auto text-center" id="vault-detail-empty">
+                        <div class="w-20 h-20 bg-surface-container border-4 border-primary flex items-center justify-center font-headline text-4xl mb-6 shadow-[4px_4px_0px_0px_rgba(26,26,26,1)]">🔍</div>
+                        <h3 class="font-headline font-black text-2xl uppercase">No Credential Selected</h3>
+                        <p class="text-sm text-on-surface-variant font-medium mt-2 leading-relaxed">Choose a service from the left list to decrypt and inspect its high-security credentials, audit logs, and statistics.</p>
+                    </div>
+
+                    <!-- Decrypted details content (Hidden by default, un-hidden when row clicked) -->
+                    <div class="max-w-4xl w-full mx-auto space-y-12 hidden" id="vault-detail-content">
+                        <!-- Header Box -->
+                        <div class="flex justify-between items-end border-b-8 border-primary pb-8">
+                            <div class="flex items-center space-x-8">
+                                <div class="w-24 h-24 bg-primary text-white flex items-center justify-center font-headline text-6xl font-black shadow-[8px_8px_0px_0px_rgba(255,204,0,1)]" id="detail-site-icon">F</div>
+                                <div>
+                                    <h2 class="font-headline text-5xl md:text-7xl font-black tracking-tighter leading-none uppercase" id="detail-site-name">FIGMA_CORE</h2>
+                                    <div class="mt-4 flex items-center space-x-4">
+                                        <span class="bg-primary text-white font-label font-bold px-4 py-1 uppercase text-xs tracking-widest" id="detail-category-badge">PRIMARY_ACCESS</span>
+                                        <span class="text-primary font-mono font-bold text-xs uppercase" id="detail-created-at">CREATED: 2023_Q4</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Edit/Delete -->
+                            <div class="flex space-x-2 flex-shrink-0">
+                                <button class="border-4 border-primary p-3 bg-white hover:bg-primary-container active:scale-95 transition-all shadow-[4px_4px_0px_0px_rgba(26,26,26,1)] active:shadow-none flex items-center justify-center" id="btn-detail-edit">
+                                    <span class="material-symbols-outlined">edit</span>
+                                </button>
+                                <button class="border-4 border-primary p-3 bg-secondary text-white hover:bg-primary active:scale-95 transition-all shadow-[4px_4px_0px_0px_rgba(26,26,26,1)] active:shadow-none flex items-center justify-center" id="btn-detail-delete">
+                                    <span class="material-symbols-outlined">delete</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Data Fields Grid -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <!-- Credential card inputs -->
+                            <div class="space-y-6">
+                                <div>
+                                    <label class="block font-headline font-black uppercase text-xs tracking-widest mb-2">Username / Email</label>
+                                    <div class="flex border-4 border-primary bg-white">
+                                        <div class="flex-1 p-4 font-mono text-base font-bold truncate select-all" id="detail-username-val">design@cipher.vault</div>
+                                        <button class="bg-primary text-white px-5 hover:bg-primary-container hover:text-primary transition-colors flex items-center justify-center border-l-2 border-primary" id="btn-detail-copy-username">
+                                            <span class="material-symbols-outlined">content_copy</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block font-headline font-black uppercase text-xs tracking-widest mb-2">Secure Password</label>
+                                    <div class="flex border-4 border-primary bg-white">
+                                        <div class="flex-1 p-4 font-mono text-base font-bold truncate tracking-widest" id="detail-password-val">••••••••••••••••</div>
+                                        <button class="bg-primary text-white px-5 border-l-2 border-primary hover:bg-primary-container hover:text-primary transition-colors flex items-center justify-center" id="btn-detail-toggle-password">
+                                            <span class="material-symbols-outlined" id="detail-toggle-pass-icon">visibility</span>
+                                        </button>
+                                        <button class="bg-primary text-white px-5 border-l-2 border-primary hover:bg-primary-container hover:text-primary transition-colors flex items-center justify-center" id="btn-detail-copy-password">
+                                            <span class="material-symbols-outlined">content_copy</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block font-headline font-black uppercase text-xs tracking-widest mb-2">Resource URL</label>
+                                    <div class="flex border-4 border-primary bg-white">
+                                        <div class="flex-1 p-4 font-mono text-sm font-bold truncate underline text-tertiary select-all" id="detail-url-val">https://www.figma.com/auth/cipher</div>
+                                        <button class="bg-primary text-white px-5 hover:bg-primary-container hover:text-primary border-l-2 border-primary transition-colors flex items-center justify-center" id="btn-detail-open-url">
+                                            <span class="material-symbols-outlined">open_in_new</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Security Stats Block -->
+                            <div class="bg-white border-4 border-primary p-8 shadow-[8px_8px_0px_0px_rgba(26,26,26,1)] text-left">
+                                <h3 class="font-headline font-black text-2xl uppercase italic border-b-4 border-primary pb-4 mb-6">Security Metric</h3>
+                                <div class="space-y-6">
+                                    <div>
+                                        <div class="flex justify-between items-end mb-2">
+                                            <span class="font-headline font-extrabold uppercase text-[10px]">Strength Level</span>
+                                            <span class="font-black text-lg strength-rating uppercase" id="detail-strength-rating">STABLE</span>
+                                        </div>
+                                        <div class="h-6 bg-surface border-2 border-primary flex p-1">
+                                            <div class="h-full bg-primary-container strength-bar-fill w-0" id="detail-strength-bar"></div>
+                                        </div>
+                                        <div class="mt-1 text-[9px] font-mono text-on-surface-variant text-right" id="detail-entropy-val">0 bits</div>
+                                    </div>
+                                    <div class="flex items-center space-x-4">
+                                        <div class="w-12 h-12 border-4 border-primary flex items-center justify-center bg-primary-container">
+                                            <span class="material-symbols-outlined text-2xl text-primary font-bold">verified</span>
+                                        </div>
+                                        <div>
+                                            <p class="font-headline font-black uppercase text-xs">MFA OPTIMIZED</p>
+                                            <p class="text-[10px] text-on-surface-variant font-medium">Auto-rotated single-use access enabled.</p>
+                                        </div>
+                                    </div>
+                                    <div class="p-3 bg-surface-container border-2 border-primary">
+                                        <p class="text-[9px] font-mono font-bold leading-relaxed" id="detail-metadata-block">
+                                            AUDIT_COMPLIANCE: VERIFIED<br/>
+                                            ENCRYPTION_STANDARD: AES-128-FERNET<br/>
+                                            KEY_KDF: PBKDF2HMAC
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Notes & Actions -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                            <div class="md:col-span-2 border-4 border-primary p-8 bg-white">
+                                <label class="block font-headline font-black uppercase text-xs tracking-widest mb-4">Secure Notes</label>
+                                <p class="text-sm leading-loose whitespace-pre-wrap font-medium text-on-surface" id="detail-notes-val">
+                                    Standard access for the enterprise design system team. All changes to the master components library must be signed off by the lead architect. Access is restricted to VPC-originated requests only.
+                                </p>
+                            </div>
+                            <div class="flex flex-col space-y-4 justify-between">
+                                <div class="bg-white border-4 border-primary p-4 flex justify-between items-center group cursor-pointer hover:bg-primary-container transition-all">
+                                    <span class="font-headline font-black uppercase text-[10px] tracking-wider">Audit logs</span>
+                                    <span class="material-symbols-outlined text-sm font-bold group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                                </div>
+                                <div class="bg-white border-4 border-primary p-4 flex justify-between items-center group cursor-pointer hover:bg-primary-container transition-all">
+                                    <span class="font-headline font-black uppercase text-[10px] tracking-wider">Access logs</span>
+                                    <span class="material-symbols-outlined text-sm font-bold group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                                </div>
+                                <div class="bg-white border-4 border-primary p-4 flex justify-between items-center group cursor-pointer hover:bg-primary-container transition-all">
+                                    <span class="font-headline font-black uppercase text-[10px] tracking-wider">Version History</span>
+                                    <span class="material-symbols-outlined text-sm font-bold group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- ============ TAB 3: STANDALONE GENERATOR ============ -->
+            <div id="tab-content-generator" class="tab-content flex-1 overflow-y-auto p-8 lg:p-12 hidden">
+                <header class="mb-10 text-left max-w-6xl mx-auto w-full">
+                    <h2 class="font-headline font-black text-6xl md:text-8xl uppercase leading-none tracking-tight">Generator</h2>
+                    <div class="flex items-center gap-4 mt-4">
+                        <span class="bg-secondary text-white px-3 py-1 font-bold uppercase text-xs">Experimental</span>
+                        <p class="text-on-surface-variant font-medium text-sm">Create high-entropy, cryptographic-grade passwords instantly.</p>
+                    </div>
+                </header>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start max-w-6xl mx-auto w-full text-left">
+                    <!-- Main Generator Panel -->
+                    <section class="lg:col-span-8 bg-surface border-4 border-primary neo-shadow p-8 flex flex-col gap-8">
+                        
+                        <!-- Password Output Box -->
+                        <div>
+                            <label class="block font-headline font-bold uppercase text-[10px] mb-2 tracking-widest text-on-surface-variant">Generated Output</label>
+                            <div class="w-full border-4 border-primary bg-surface-bright p-5 flex items-center justify-between gap-4 overflow-hidden">
+                                <span class="font-headline text-3xl font-black truncate tracking-wider text-primary select-all" id="gen-view-output">CLICK_GENERATE...</span>
+                                <div class="flex gap-2 flex-shrink-0">
+                                    <button class="p-3 border-2 border-primary bg-primary-container text-primary hover:bg-primary hover:text-white active:translate-y-1 transition-all flex items-center justify-center shadow-[2px_2px_0px_0px_rgba(26,26,26,1)] active:shadow-none" id="gen-view-copy" title="Copy to clipboard">
+                                        <span class="material-symbols-outlined">content_copy</span>
+                                    </button>
+                                    <button class="p-3 border-2 border-primary bg-tertiary text-white hover:bg-primary active:translate-y-1 transition-all flex items-center justify-center shadow-[2px_2px_0px_0px_rgba(26,26,26,1)] active:shadow-none" id="gen-view-generate" title="Refresh">
+                                        <span class="material-symbols-outlined">refresh</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sliders & Toggles -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <!-- Length Control -->
+                            <div class="flex flex-col gap-4">
+                                <div class="flex justify-between items-end">
+                                    <label class="font-headline font-bold uppercase text-xs tracking-wider">Character Length</label>
+                                    <span class="font-headline font-black text-4xl text-secondary" id="gen-view-length-val">20</span>
+                                </div>
+                                <input class="cursor-pointer" id="gen-view-length" max="64" min="8" type="range" value="20"/>
+                            </div>
+                            
+                            <!-- Configuration Toggles -->
+                            <div class="grid grid-cols-2 gap-4">
+                                <button class="gen-toggle flex flex-col items-center justify-center p-3 border-2 border-primary bg-primary-container text-on-surface hover:bg-primary-container/85 active:scale-95 transition-all text-on-surface" data-opt="lower" id="gen-view-lower">
+                                    <span class="material-symbols-outlined text-2xl font-bold">abc</span>
+                                    <span class="font-label text-[9px] font-bold uppercase mt-1">Lowercase</span>
+                                </button>
+                                <button class="gen-toggle flex flex-col items-center justify-center p-3 border-2 border-primary bg-primary-container text-on-surface hover:bg-primary-container/85 active:scale-95 transition-all text-on-surface" data-opt="upper" id="gen-view-upper">
+                                    <span class="material-symbols-outlined text-2xl font-bold">format_size</span>
+                                    <span class="font-label text-[9px] font-bold uppercase mt-1">Uppercase</span>
+                                </button>
+                                <button class="gen-toggle flex flex-col items-center justify-center p-3 border-2 border-primary bg-primary-container text-on-surface hover:bg-primary-container/85 active:scale-95 transition-all text-on-surface" data-opt="digits" id="gen-view-digits">
+                                    <span class="material-symbols-outlined text-2xl font-bold">123</span>
+                                    <span class="font-label text-[9px] font-bold uppercase mt-1">Numbers</span>
+                                </button>
+                                <button class="gen-toggle flex flex-col items-center justify-center p-3 border-2 border-primary bg-primary-container text-on-surface hover:bg-primary-container/85 active:scale-95 transition-all text-on-surface" data-opt="symbols" id="gen-view-symbols">
+                                    <span class="material-symbols-outlined text-2xl font-bold">special_character</span>
+                                    <span class="font-label text-[9px] font-bold uppercase mt-1">Symbols</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- CTA Generate -->
+                        <button class="w-full bg-primary text-white py-6 font-headline font-black text-3xl uppercase border-4 border-primary neo-shadow active:translate-x-1 active:translate-y-1 active:shadow-none transition-all flex items-center justify-center gap-3" onclick="handleGenerateView()">
+                            <span class="material-symbols-outlined text-3xl font-black">bolt</span>
+                            <span>Generate Password</span>
+                        </button>
+                    </section>
+
+                    <!-- Strength metrics and history -->
+                    <aside class="lg:col-span-4 flex flex-col gap-8">
+                        <!-- Strength Visualization -->
+                        <div class="bg-primary text-white border-4 border-primary neo-shadow p-6">
+                            <h3 class="font-headline font-bold uppercase mb-4 text-[10px] tracking-widest opacity-80">Entropy Strength</h3>
+                            <div class="flex items-center gap-6 mb-4">
+                                <span class="font-headline font-black text-6xl text-primary-container" id="gen-view-strength-rating">96</span>
+                                <div class="flex flex-col">
+                                    <span class="uppercase font-bold text-lg leading-none" id="gen-view-strength-text">Robust</span>
+                                    <span class="text-[10px] opacity-75 mt-1" id="gen-view-strength-entropy">131 bits</span>
+                                </div>
+                            </div>
+                            <div class="h-4 w-full bg-on-surface-variant border-2 border-on-surface">
+                                <div class="h-full bg-primary-container strength-bar-fill" id="gen-view-strength-bar" style="width: 80%;"></div>
+                            </div>
+                        </div>
+
+                        <!-- Guide tips -->
+                        <div class="bg-tertiary-container border-4 border-primary neo-shadow p-6 text-primary">
+                            <h3 class="font-headline font-bold uppercase mb-4 text-[10px] tracking-wider text-tertiary">Quick Security Guide</h3>
+                            <ul class="space-y-4 text-xs font-bold uppercase text-primary/85">
+                                <li class="flex gap-3">
+                                    <span class="material-symbols-outlined text-tertiary">shield</span>
+                                    <p>Use at least 16 characters for critical accounts.</p>
+                                </li>
+                                <li class="flex gap-3">
+                                    <span class="material-symbols-outlined text-tertiary">history</span>
+                                    <p>Rotate keys frequently for optimal protection.</p>
+                                </li>
+                                <li class="flex gap-3">
+                                    <span class="material-symbols-outlined text-tertiary">visibility_off</span>
+                                    <p>Never reuse passwords across platforms.</p>
+                                </li>
+                            </ul>
+                        </div>
+                    </aside>
+                </div>
+            </div>
+
+            <!-- ============ TAB 4: PASSWORD ANALYZER ============ -->
+            <div id="tab-content-analyzer" class="tab-content flex-1 overflow-y-auto p-8 lg:p-12 hidden">
+                <header class="mb-10 text-left max-w-4xl mx-auto w-full">
+                    <h2 class="font-headline font-black text-6xl md:text-8xl uppercase leading-none tracking-tight">Analyzer</h2>
+                    <p class="text-on-surface-variant font-medium mt-2">Test password cryptographic entropy. Zero server network communication.</p>
+                </header>
+
+                <div class="bg-white border-4 border-primary neo-shadow p-8 max-w-4xl mx-auto w-full text-left space-y-8">
+                    <div class="space-y-2">
+                        <label for="analyzer-input" class="block font-headline font-black uppercase text-xs tracking-widest">Enter password to analyze</label>
+                        <div class="relative flex border-4 border-primary bg-white">
+                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-primary">key</span>
+                            <!-- Live strength analysis input -->
+                            <input type="password" id="analyzer-input" placeholder="TYPE OR PASTE A PASSWORD FOR AUDITING..." class="w-full pl-12 pr-12 py-3.5 border-none bg-transparent font-label text-sm uppercase tracking-wider focus:ring-0 focus:outline-none placeholder-outline-variant">
+                            <button type="button" class="password-toggle absolute right-3 top-1/2 -translate-y-1/2 text-primary flex items-center justify-center hover:scale-110 active:scale-95 transition-transform" data-target="analyzer-input">
+                                <span class="material-symbols-outlined">visibility</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Audit results box -->
+                    <div class="analyzer-result bg-surface-container border-2 border-primary p-8 hidden space-y-8" id="analyzer-result">
+                        <div class="flex flex-col md:flex-row items-center gap-8 border-b-2 border-primary pb-6">
+                            
+                            <!-- Circular visual score SVG -->
+                            <div class="relative w-32 h-32 flex-shrink-0 flex items-center justify-center">
+                                <svg viewBox="0 0 120 120" class="w-full h-full transform -rotate-90">
+                                    <circle cx="60" cy="60" r="52" stroke="#e8e3da" stroke-width="8" fill="transparent" class="stroke-current"></circle>
+                                    <circle cx="60" cy="60" r="52" stroke="#ffcc00" stroke-width="8" fill="transparent" class="stroke-current" stroke-dasharray="326.7" stroke-dashoffset="326.7" id="analyzer-score-circle"></circle>
+                                </svg>
+                                <div class="absolute inset-0 flex flex-col items-center justify-center font-headline">
+                                    <span class="text-4xl font-black leading-none" id="analyzer-score-num">0</span>
+                                    <span class="text-[9px] uppercase tracking-wider opacity-60 mt-1 font-bold">score</span>
+                                </div>
+                            </div>
+
+                            <div class="text-center md:text-left space-y-2">
+                                <h4 class="font-headline font-black text-3xl uppercase" id="analyzer-rating-text">Vulnerable</h4>
+                                <p class="font-mono text-sm font-bold text-on-surface-variant" id="analyzer-entropy-text">Entropy: 0 bits</p>
+                                <div class="h-2.5 bg-white border-2 border-primary w-48 flex p-0.5 mt-2">
+                                    <div class="h-full bg-secondary strength-bar-fill w-0" id="analyzer-strength-bar"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Checklists grid -->
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-4 font-headline uppercase font-bold text-xs" id="analyzer-checks"></div>
+
+                        <!-- Audit warnings -->
+                        <div class="space-y-3" id="analyzer-feedback-list"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============ TAB 5: SECURITY / VAULT PASSWORD ============ -->
+            <div id="tab-content-security" class="tab-content flex-1 overflow-y-auto p-8 lg:p-12 hidden">
+                <header class="mb-10 text-left max-w-4xl mx-auto w-full">
+                    <h2 class="font-headline font-black text-6xl md:text-8xl uppercase leading-none tracking-tight">Security</h2>
+                    <p class="text-on-surface-variant font-medium mt-2">Rotate your master vaults password. This re-encrypts every credential safely in DB.</p>
+                </header>
+
+                <div class="bg-white border-4 border-primary neo-shadow p-8 max-w-4xl mx-auto w-full text-left">
+                    <div id="security-error" class="bg-secondary text-white border-2 border-primary p-4 font-label uppercase text-xs font-bold mb-6 hidden"></div>
+
+                    <form id="security-form" autocomplete="off" class="space-y-6">
+                        <div class="space-y-2">
+                            <label for="security-current-password" class="block font-headline font-black uppercase text-xs tracking-widest">Current Master Password</label>
+                            <div class="relative flex border-4 border-primary bg-white">
+                                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-primary">lock</span>
+                                <input type="password" id="security-current-password" placeholder="ENTER CURRENT MASTER PASSWORD..." class="w-full pl-12 pr-12 py-3 border-none bg-transparent font-label text-sm uppercase tracking-wider focus:ring-0 focus:outline-none placeholder-outline-variant" required>
+                                <button type="button" class="password-toggle absolute right-3 top-1/2 -translate-y-1/2 text-primary flex items-center justify-center hover:scale-110 active:scale-95 transition-transform" data-target="security-current-password">
+                                    <span class="material-symbols-outlined">visibility</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label for="security-new-password" class="block font-headline font-black uppercase text-xs tracking-widest">New Master Password</label>
+                            <div class="relative flex border-4 border-primary bg-white">
+                                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-primary">key</span>
+                                <input type="password" id="security-new-password" placeholder="ENTER NEW STRONG PASSWORD..." class="w-full pl-12 pr-12 py-3 border-none bg-transparent font-label text-sm uppercase tracking-wider focus:ring-0 focus:outline-none placeholder-outline-variant" required minlength="8">
+                                <button type="button" class="password-toggle absolute right-3 top-1/2 -translate-y-1/2 text-primary flex items-center justify-center hover:scale-110 active:scale-95 transition-transform" data-target="security-new-password">
+                                    <span class="material-symbols-outlined">visibility</span>
+                                </button>
+                            </div>
+                            
+                            <!-- Strength Indicator -->
+                            <div class="border-2 border-primary p-4 bg-surface-container mt-3">
+                                <div class="flex justify-between items-end mb-2">
+                                    <span class="font-headline font-extrabold uppercase text-[10px] tracking-widest">Strength Rating</span>
+                                    <span class="font-black text-sm uppercase strength-rating" id="security-strength-rating">EMPTY</span>
+                                </div>
+                                <div class="h-4 bg-white border-2 border-primary flex p-0.5">
+                                    <div class="h-full bg-secondary strength-bar-fill w-0" id="security-strength-bar"></div>
+                                </div>
+                                <div class="mt-2 text-[10px] font-mono font-bold text-on-surface-variant flex justify-between">
+                                    <span>Entropy Level:</span>
+                                    <span id="security-strength-entropy">0 bits</span>
+                                </div>
+                                <ul class="mt-3 text-[10px] font-bold space-y-1 text-secondary uppercase list-none" id="security-strength-feedback"></ul>
+                            </div>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label for="security-confirm-password" class="block font-headline font-black uppercase text-xs tracking-widest">Confirm New Password</label>
+                            <div class="relative flex border-4 border-primary bg-white">
+                                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-primary">lock</span>
+                                <input type="password" id="security-confirm-password" placeholder="CONFIRM NEW MASTER PASSWORD..." class="w-full pl-12 pr-4 py-3 border-none bg-transparent font-label text-sm uppercase tracking-wider focus:ring-0 focus:outline-none placeholder-outline-variant" required>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="w-full bg-primary text-white py-4 font-headline font-black text-lg uppercase border-4 border-primary neo-shadow active:translate-x-1 active:translate-y-1 active:shadow-none transition-all flex items-center justify-center gap-2" id="security-save-btn">
+                            <span class="material-symbols-outlined">verified_user</span>
+                            <span class="btn-text">🔐 Update Vault Password</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<!-- ============================================================
+     MODAL: Add / Edit Credential Modal (Unified action box)
+     ============================================================ -->
+<div class="modal-overlay" id="modal-password">
+    <div class="modal max-w-xl text-left">
+        <div class="bg-primary text-white p-6 border-b-4 border-primary flex justify-between items-center select-none">
+            <h2 class="font-headline font-black text-xl uppercase italic tracking-wider" id="modal-title">Edit Credential</h2>
+            <button class="font-headline font-bold hover:scale-110 active:scale-90 transition-transform" id="modal-close-btn">✕</button>
+        </div>
+        <div class="p-8 max-h-[75vh] overflow-y-auto space-y-6">
+            <form id="password-form" autocomplete="off" class="space-y-6">
+                <!-- Hidden dynamic ID field -->
+                <input type="hidden" id="pw-edit-id">
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-1">
+                        <label for="pw-site" class="block font-headline font-bold uppercase text-[10px]">Site / Service *</label>
+                        <div class="relative flex border-2 border-primary bg-white">
+                            <span class="material-symbols-outlined absolute left-2 top-1/2 -translate-y-1/2 text-primary text-sm">language</span>
+                            <input type="text" id="pw-site" placeholder="e.g. GitHub" class="w-full pl-8 pr-2 py-2 border-none bg-transparent font-label text-xs uppercase focus:ring-0 focus:outline-none" required>
+                        </div>
+                    </div>
+                    <div class="space-y-1">
+                        <label for="pw-category" class="block font-headline font-bold uppercase text-[10px]">Category</label>
+                        <div class="relative flex border-2 border-primary bg-white">
+                            <select id="pw-category" class="w-full py-2 pl-3 pr-8 border-none bg-transparent font-label text-xs uppercase tracking-wider focus:ring-0 focus:outline-none">
+                                <option>General</option>
+                                <option>Social</option>
+                                <option>Email</option>
+                                <option>Finance</option>
+                                <option>Work</option>
+                                <option>Shopping</option>
+                                <option>Gaming</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-1">
+                    <label for="pw-url" class="block font-headline font-bold uppercase text-[10px]">Resource URL (Optional)</label>
+                    <div class="relative flex border-2 border-primary bg-white">
+                        <span class="material-symbols-outlined absolute left-2 top-1/2 -translate-y-1/2 text-primary text-sm">link</span>
+                        <input type="url" id="pw-url" placeholder="https://..." class="w-full pl-8 pr-2 py-2 border-none bg-transparent font-label text-xs focus:ring-0 focus:outline-none">
+                    </div>
+                </div>
+
+                <div class="space-y-1">
+                    <label for="pw-username" class="block font-headline font-bold uppercase text-[10px]">Username / Email *</label>
+                    <div class="relative flex border-2 border-primary bg-white">
+                        <span class="material-symbols-outlined absolute left-2 top-1/2 -translate-y-1/2 text-primary text-sm">person</span>
+                        <input type="text" id="pw-username" placeholder="user@example.com" class="w-full pl-8 pr-2 py-2 border-none bg-transparent font-label text-xs focus:ring-0 focus:outline-none" required>
+                    </div>
+                </div>
+
+                <div class="space-y-1">
+                    <label for="pw-password" class="block font-headline font-bold uppercase text-[10px]">Credential Password *</label>
+                    <div class="relative flex border-2 border-primary bg-white">
+                        <span class="material-symbols-outlined absolute left-2 top-1/2 -translate-y-1/2 text-primary text-sm">key</span>
+                        <input type="password" id="pw-password" placeholder="ENTER SECURE PASSWORD..." class="w-full pl-8 pr-10 py-2 border-none bg-transparent font-label text-xs focus:ring-0 focus:outline-none" required>
+                        <button type="button" class="password-toggle absolute right-2 top-1/2 -translate-y-1/2 text-primary hover:scale-115" data-target="pw-password">
+                            <span class="material-symbols-outlined text-sm">visibility</span>
+                        </button>
+                    </div>
+                    
+                    <!-- Live strength rendering inside modal -->
+                    <div class="border border-primary p-2 bg-surface-container mt-2 flex justify-between items-center text-[9px] font-headline uppercase font-bold">
+                        <span class="strength-rating" id="pw-strength-rating">Rating: Stable</span>
+                        <div class="h-2.5 bg-white border border-primary w-24 flex p-0.5">
+                            <div class="h-full bg-secondary strength-bar-fill w-0" id="pw-strength-bar"></div>
+                        </div>
+                        <span id="pw-strength-entropy">0 bits</span>
+                    </div>
+                </div>
+
+                <!-- Inline Quick Password Generator -->
+                <div class="border-2 border-primary p-4 bg-surface-container-low space-y-3">
+                    <h4 class="font-headline font-black text-xs uppercase">🎲 Quick Generator</h4>
+                    <div class="flex border-2 border-primary bg-white">
+                        <input type="text" id="gen-modal-output" readonly placeholder="Generated password..." class="w-full px-3 py-2 border-none bg-transparent font-mono text-xs font-bold text-primary select-all">
+                        <button type="button" class="bg-primary text-white px-4 font-headline text-xs font-bold hover:bg-primary-container hover:text-primary transition-colors border-l border-primary" id="gen-modal-use">✓ USE</button>
+                    </div>
+                    <div class="flex items-center justify-between gap-4 text-xs font-headline font-bold">
+                        <div class="flex items-center gap-2 flex-grow">
+                            <span>Length:</span>
+                            <input type="range" id="gen-modal-length" min="8" max="64" value="16" class="flex-grow">
+                            <span id="gen-modal-length-val" class="text-secondary w-6 text-right">16</span>
+                        </div>
+                        <button type="button" class="border border-primary px-3 py-1.5 bg-white hover:bg-primary-container active:scale-95 transition-all text-[10px]" id="gen-modal-generate">GENERATE</button>
+                    </div>
+                </div>
+
+                <div class="space-y-1">
+                    <label for="pw-notes" class="block font-headline font-bold uppercase text-[10px]">Secure Notes (Optional)</label>
+                    <textarea id="pw-notes" placeholder="e.g. Access restriction parameters..." class="w-full p-3 border-2 border-primary bg-white font-label text-xs focus:ring-0 focus:outline-none h-20 resize-y"></textarea>
+                </div>
+            </form>
+        </div>
+        <div class="bg-surface-container p-6 border-t-4 border-primary flex justify-end gap-3 select-none flex-shrink-0">
+            <button class="border-2 border-primary px-6 py-2 bg-white text-xs font-headline font-black uppercase hover:bg-primary hover:text-white transition-colors" id="modal-cancel-btn">Cancel</button>
+            <button class="border-2 border-primary px-6 py-2 bg-primary text-white text-xs font-headline font-black uppercase hover:bg-primary-container hover:text-primary transition-colors flex items-center gap-1.5" id="modal-save-btn">
+                <span class="btn-text">Update Credential</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     MODAL: Delete Confirmation Modal (Neo-Brutalist Alert)
+     ============================================================ -->
+<div class="modal-overlay" id="modal-confirm">
+    <div class="modal max-w-sm text-left">
+        <div class="p-8 space-y-6">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-secondary border-2 border-primary flex items-center justify-center text-white font-headline text-3xl shadow-[2px_2px_0px_0px_rgba(26,26,26,1)]">🗑️</div>
+                <div>
+                    <h3 class="font-headline font-black text-xl uppercase italic">Delete Record?</h3>
+                    <p class="text-[10px] text-on-surface-variant font-bold uppercase tracking-widest mt-0.5">PERMANENT_DESTRUCTION</p>
+                </div>
+            </div>
+            
+            <p class="text-xs font-medium leading-relaxed">Are you absolutely sure you want to delete this credentials record? This database execution is absolute and **cannot be undone**.</p>
+            
+            <div class="flex gap-3 justify-end pt-2">
+                <button class="border-2 border-primary px-5 py-2 bg-white text-xs font-headline font-black uppercase hover:bg-primary hover:text-white transition-colors" id="confirm-cancel">Cancel</button>
+                <button class="border-2 border-primary px-5 py-2 bg-secondary text-white text-xs font-headline font-black uppercase hover:bg-primary transition-colors shadow-[2px_2px_0px_0px_rgba(26,26,26,1)] active:shadow-none" id="confirm-delete">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     MODAL: Single-Use Master Password Rotation (OTMP Flow)
+     ============================================================ -->
+<div class="modal-overlay" id="modal-rotation" style="z-index: 9999;">
+    <div class="modal max-w-lg text-left shadow-[8px_8px_0px_0px_#e63b2e]">
+        <div class="bg-secondary text-white p-6 border-b-4 border-primary flex items-center gap-4 select-none">
+            <span class="material-symbols-outlined text-4xl text-primary-container font-black">warning</span>
+            <div>
+                <h2 class="font-headline font-black text-2xl uppercase tracking-wider">Master Key Rotated!</h2>
+                <p class="text-[10px] text-white/90 font-mono tracking-widest uppercase">OTMP_ROTATION_SUCCESS</p>
+            </div>
+        </div>
+        
+        <div class="p-8 space-y-6">
+            <p class="text-xs font-medium leading-relaxed">
+                For absolute lockbox safety, your vault master password has been **rotated dynamically** to a new cryptographic single-use key. Your previous login password is now **worthless**.
+            </p>
+
+            <!-- Key display -->
+            <div class="bg-surface-container border-4 border-primary p-5 relative neo-shadow">
+                <label class="block font-headline font-black uppercase text-[10px] tracking-wider text-secondary mb-2">🔑 New Active Master Password (131-bit Entropy):</label>
+                <div class="font-mono text-xl font-bold select-all tracking-wider text-primary select-all break-all select-all pt-1 pb-4" id="rotation-password-val">[Generated Key]</div>
+                <div class="flex gap-2">
+                    <button type="button" class="border-2 border-primary px-3 py-1.5 bg-white font-headline text-[10px] font-bold hover:bg-primary-container hover:text-primary transition-colors flex items-center gap-1 shadow-[2px_2px_0px_0px_rgba(26,26,26,1)] active:shadow-none" id="btn-rotation-copy">
+                        <span class="material-symbols-outlined text-sm">content_copy</span>
+                        <span>COPY KEY</span>
+                    </button>
+                    <button type="button" class="border-2 border-primary px-3 py-1.5 bg-white font-headline text-[10px] font-bold hover:bg-primary-container hover:text-primary transition-colors flex items-center gap-1 shadow-[2px_2px_0px_0px_rgba(26,26,26,1)] active:shadow-none" id="btn-rotation-download">
+                        <span class="material-symbols-outlined text-sm">download</span>
+                        <span>DOWNLOAD BACKUP</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Validation checklist -->
+            <div class="border-2 border-primary p-5 bg-surface-container-low space-y-4">
+                <h4 class="font-headline font-black text-xs uppercase text-primary/80">🔒 Lockout Prevention Checklist:</h4>
+                <div class="space-y-3 font-headline text-xs font-bold uppercase">
+                    <!-- Copy tracking tracker -->
+                    <label id="rotation-label-copy" class="flex items-start gap-3 text-primary/40 cursor-not-allowed select-none pointer-events-none transition-all">
+                        <input type="checkbox" id="rotation-chk-copy" disabled class="w-4 h-4 mt-0.5 border-2 border-primary text-primary focus:ring-0 focus:outline-none">
+                        <span>I have successfully copied / backed up the new master key.</span>
+                    </label>
+                    <label class="flex items-start gap-3 cursor-pointer select-none">
+                        <input type="checkbox" id="rotation-chk-useless" class="w-4 h-4 mt-0.5 border-2 border-primary text-primary focus:ring-0 focus:outline-none">
+                        <span>I understand my previous master password is permanently deleted.</span>
+                    </label>
+                </div>
+            </div>
+
+            <button type="button" class="w-full bg-primary text-white py-4 font-headline font-black text-lg uppercase border-4 border-primary neo-shadow active:translate-x-1 active:translate-y-1 active:shadow-none transition-all flex items-center justify-center gap-2" id="btn-rotation-confirm" disabled>
+                <span class="material-symbols-outlined">lock_open</span>
+                <span>Enter Dashboard</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toast-container"></div>
+
+<!-- Controller App Script -->
+<script src="/static/app.js"></script>
+</body>
+</html>
